@@ -1,0 +1,81 @@
+name: 꽃 그림 가져오기
+# 꽃 그림은 공개 저장소 Verdus927/kkot-sise 에서 만듭니다.
+# 이 작업은 그쪽 img/flowers 의 새 그림과 바뀐 그림을 이 저장소로 복사해 옵니다.
+#  - 복사해 온 그림은 이 저장소에 따로 저장됩니다. 원본 저장소가 없어지거나 비공개가 되어도 그대로 남습니다.
+#  - 이 저장소의 그림을 지우지 않습니다. 원본에서 지워진 그림도 여기에는 남습니다.
+#  - .webp 그림 파일만, 한 장 3MB 이하만 가져옵니다.
+#  - 원본에 접속하지 못하면 아무것도 바꾸지 않고 끝납니다.
+#  - 사이트의 그림 목록(FLOWER_IMG)은 이 저장소의 img/flowers 에 있는 파일 이름으로 다시 만듭니다.
+# 하루 한 번(한국 시간 새벽 5시 20분) 돌고, Actions 탭에서 'Run workflow'로 바로 돌릴 수도 있습니다.
+on:
+  schedule:
+    - cron: '20 20 * * *'
+  workflow_dispatch:
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: 원본 저장소 받기
+        id: src
+        run: |
+          if git clone --depth 1 https://github.com/Verdus927/kkot-sise.git /tmp/src; then
+            echo "ok=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "원본 저장소에 접속하지 못했습니다. 이번에는 아무것도 바꾸지 않습니다."
+          fi
+      - name: 새 그림 복사하고 목록 다시 만들기
+        if: steps.src.outputs.ok == '1'
+        run: |
+          mkdir -p img/flowers
+          python3 - <<'PY'
+          import os, re, shutil, json
+          SRC, DST = '/tmp/src/img/flowers', 'img/flowers'
+          added = changed = 0
+          if os.path.isdir(SRC):
+              for f in sorted(os.listdir(SRC)):
+                  sp = os.path.join(SRC, f)
+                  if not f.endswith('.webp') or not os.path.isfile(sp) or os.path.islink(sp):
+                      continue
+                  if '/' in f or f.startswith('.') or os.path.getsize(sp) > 3 * 1024 * 1024:
+                      continue
+                  with open(sp, 'rb') as fh:
+                      head = fh.read(12)
+                  if not (head[:4] == b'RIFF' and head[8:12] == b'WEBP'):
+                      continue
+                  dp = os.path.join(DST, f)
+                  if not os.path.exists(dp):
+                      shutil.copyfile(sp, dp); added += 1
+                  elif open(dp, 'rb').read() != open(sp, 'rb').read():
+                      shutil.copyfile(sp, dp); changed += 1
+          print(f'새 그림 {added}장, 바뀐 그림 {changed}장')
+          names = sorted(f[:-5] for f in os.listdir(DST) if f.endswith('.webp'))
+          line = 'const FLOWER_IMG=new Set(' + json.dumps(names, ensure_ascii=False) + ');'
+          p = 'index.html'
+          s = open(p, encoding='utf-8').read()
+          s2, n = re.subn(r'const FLOWER_IMG=new Set\(\[.*?\]\);', lambda _: line, s, count=1, flags=re.S)
+          if n != 1:
+              raise SystemExit('index.html 에서 FLOWER_IMG 목록을 찾지 못했습니다')
+          if s2 != s:
+              open(p, 'w', encoding='utf-8').write(s2)
+              print(f'그림 목록 갱신: {len(names)}개')
+          PY
+      - name: 바뀌었으면 올리기
+        if: steps.src.outputs.ok == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -z "$(git status --porcelain img/flowers index.html)" ]; then echo "바뀐 것 없음"; exit 0; fi
+          git add img/flowers index.html
+          git commit -m "꽃 그림 가져오기"
+          for i in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep $((i*5))
+          done
+          exit 1
