@@ -124,3 +124,10 @@ index.html 에서 자주 보는 곳
 - 처음부터 다시 설치: `resetSetup` 실행 후 `setupAll`
 - Actions 가 403 으로 실패: 저장소 Settings > Actions > General > Workflow permissions 를 'Read and write' 로
 - 웹 앱 동작 확인: `API_URL?api=getDashboardData` 를 열면 `{"ok":true,...}` 가 나와야 함
+
+## 검색 등록 (구글·네이버·다음)
+
+- 2026-11-09 세 곳 모두 등록 끝. 맨 위 주소 `https://best15993232-sudo.github.io` 로 한 번 등록해서 두 사이트(flower-planner, flower-sise)가 같이 들어가 있음
+- 소유 확인 태그(구글·네이버)와 `robots.txt`(다음 PIN, 사이트맵 주소)는 **`best15993232-sudo/best15993232-sudo.github.io` 저장소**에서 관리. 이 저장소에서는 고치지 않음
+- `robots.txt` 는 두 사이트만 허용하고 같은 주소 아래 다른 사이트는 막음. 다른 사이트를 검색에 내보내려면 그 저장소의 robots.txt 에 `Allow:` 줄과 `Sitemap:` 줄을 더함
+- 이 저장소의 `sitemap.xml` 과 `<link rel="canonical">` 은 지우지 않음. 새 페이지를 만들면 sitemap.xml 에 추가
