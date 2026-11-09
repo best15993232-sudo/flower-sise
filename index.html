@@ -267,6 +267,9 @@ html{overflow-x:clip}
 .site-card b{font-size:16px}
 .site-card p{margin:4px 0 0;font-size:13px;color:var(--ink-2)}
 .site-card .soon{font-size:12px;font-weight:700;border:1px solid var(--line);color:var(--ink-2);border-radius:999px;padding:7px 12px}
+.ad-banner{display:block;position:relative;aspect-ratio:3/1;border-radius:var(--r);overflow:hidden;background:var(--paper);border:1px solid var(--line);box-shadow:0 6px 16px rgba(80,50,20,.12)}
+.ad-banner img{display:block;width:100%;height:100%;object-fit:cover}
+.ad-banner .ad-tag{position:absolute;top:8px;left:8px;font-size:11px;font-weight:700;line-height:1;color:#fff;background:rgba(30,25,20,.55);border-radius:999px;padding:4px 8px;pointer-events:none}
 .site-card a.go{background:var(--forest);color:var(--paper);text-decoration:none;font-weight:800;border-radius:999px;padding:10px 16px}
 
 /* ---------- 전체 품목 조회 ---------- */
@@ -545,6 +548,9 @@ const favKey=k=>k.includes(SEP)?k:mainKey(k);
 const favIndexKeys=()=>[...new Set([...FAV].map(favKey))];
 // 졸업식·행사 준비 사이트 주소. 배포하면 아래 따옴표 안에 주소를 넣으세요. 비어 있으면 '준비 중'으로 보입니다.
 const SHOW_PARTNER_LINKS=false; // 졸업식 사이트·부자재몰 연결 (false면 숨김, 그 자리에 광고 문의 카드)
+// 광고 배너: img 가 비어 있거나 until(끝나는 날, 서울 기준, 그날까지 보임)이 지나면 '이 자리에 광고를 실어 보세요' 카드가 나와요
+// 배너 파일은 img/ads/ 에 (가로 1440 x 세로 480, JPG·PNG, 500KB 이하). 예: {img:'img/ads/가게이름-2026-12.jpg', link:'https://...', until:'2026-12-31'}
+const AD={img:'', link:'', until:''};
 const AD_FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSfJkKhhNP8_mymRhyIvKVzBp_ocZCFpHAXriDjk5D2G9MbkaA/viewform'; // 광고 문의 구글 폼 주소를 넣으면 하단과 계절 카드에 문의 버튼이 생겨요
 (function(){var p=document.getElementById('footAd');if(p&&AD_FORM_URL){p.innerHTML='광고 문의 <a href="'+AD_FORM_URL+'" target="_blank" rel="noopener">문의하기 ↗</a>';p.hidden=false}})(); // 광고 문의 구글 폼 주소 (비어 있으면 '문의 곧 열려요')
 const SEASON_SITE_URL=''; // 졸업식 꽃 판매 플래너 (꽃시세 전용 단축 링크)
@@ -752,7 +758,10 @@ function drawNews(){const arr=distinctNews(NEWS.slice().sort((a,b)=>String(b.dat
 function loadNews(){if(NEWS_SNAP){NEWS=NEWS_SNAP.items||[];drawNews();return}const g=typeof google!=='undefined'&&google.script&&google.script.run;if(!g)return;google.script.run.withSuccessHandler(r=>{NEWS=r.items||[];drawNews()}).withFailureHandler(e=>{$('newsTop').innerHTML='<div class="empty">뉴스를 불러오지 못했습니다.</div>'}).getFlowerNews()}
 const EVENTS=[{m:2,d:14,n:'밸런타인데이',items:'장미',note:'선물용 꽃 수요를 살펴볼 시기'},{m:3,d:1,n:'졸업·입학 시즌',len:21,items:'장미 · 거베라 · 안개꽃',note:'학교별 행사 일정은 다를 수 있어요'},{m:3,d:14,n:'화이트데이',items:'장미 · 안개꽃',note:'선물 수요 참고'},{m:5,d:1,n:'봄 웨딩 시즌',len:61,items:'장미 · 수국 · 리시안셔스',note:'예식 수요 참고'},{m:5,d:8,n:'어버이날',items:'카네이션',note:'카네이션 수요가 집중되는 시기'},{m:5,d:15,n:'스승의 날',items:'카네이션',note:'선물 관련 규정도 확인 필요'},{m:9,d:1,n:'가을 웨딩 시즌',len:61,items:'장미 · 수국',note:'예식 수요 참고'},{m:9,d:1,n:'가을 국화 시즌',len:75,items:'국화',note:'가을 행사·추모 수요 참고'},{m:11,d:11,n:'빼빼로데이',items:'장미',note:'선물 수요 참고'},{m:12,d:1,n:'연말 행사 시즌',len:30,items:'장미 · 백합',note:'연말 행사 수요 참고'}];
 function drawSeasonSite(){
- const html=`<div class="site-card cornered"><img class="corner tl" src="img/deco/corner-tl.webp?v=1" alt="" aria-hidden="true"><img class="corner br" src="img/deco/corner-br.webp?v=1" alt="" aria-hidden="true">${SHOW_PARTNER_LINKS?`<div><b>졸업·입학 시즌 꽃 준비</b><p>우리 동네 학교 졸업식 날짜를 지도와 목록으로 찾아보고, 판매 일정을 메모해 두는 사이트예요.</p></div><a class="go" href="${esc(SEASON_SITE_URL)}" target="_blank" rel="noopener">근처 졸업식 찾기 ↗</a>`:`<div><b>이 자리에 광고를 실어 보세요</b><p>꽃집 사장님들이 매일 시세를 확인하는 페이지예요. 한 달 3만원.</p></div>${AD_FORM_URL?`<a class="go" href="${esc(AD_FORM_URL)}" target="_blank" rel="noopener">광고 문의 ↗</a>`:'<span class="soon">문의 곧 열려요</span>'}`}</div>`;
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul'}).format(new Date());
+ const adOn=!SHOW_PARTNER_LINKS&&AD.img&&(!AD.until||today<=AD.until);
+ const banner=adOn?(()=>{const inner=`<img src="${esc(AD.img)}" alt="광고" width="1440" height="480" loading="lazy" decoding="async"><span class="ad-tag">광고</span>`;return AD.link?`<a class="ad-banner" href="${esc(AD.link)}" target="_blank" rel="noopener sponsored">${inner}</a>`:`<div class="ad-banner">${inner}</div>`})():'';
+ const html=banner||`<div class="site-card cornered"><img class="corner tl" src="img/deco/corner-tl.webp?v=1" alt="" aria-hidden="true"><img class="corner br" src="img/deco/corner-br.webp?v=1" alt="" aria-hidden="true">${SHOW_PARTNER_LINKS?`<div><b>졸업·입학 시즌 꽃 준비</b><p>우리 동네 학교 졸업식 날짜를 지도와 목록으로 찾아보고, 판매 일정을 메모해 두는 사이트예요.</p></div><a class="go" href="${esc(SEASON_SITE_URL)}" target="_blank" rel="noopener">근처 졸업식 찾기 ↗</a>`:`<div><b>이 자리에 광고를 실어 보세요</b><p>꽃집 사장님들이 매일 시세를 확인하는 페이지예요. 한 달 3만원.</p></div>${AD_FORM_URL?`<a class="go" href="${esc(AD_FORM_URL)}" target="_blank" rel="noopener">광고 문의 ↗</a>`:'<span class="soon">문의 곧 열려요</span>'}`}</div>`;
  for(const id of ['seasonSite','seasonSiteHome']){const box=$(id);if(box)box.innerHTML=html}
 }
 drawSeasonSite();
