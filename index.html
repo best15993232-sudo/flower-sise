@@ -322,7 +322,7 @@ html{overflow-x:clip}
 @media (min-width:1180px){.news-deco{width:170px;right:-56px}}
 @media (min-width:761px){
  .news-wrap .news-list{position:relative;z-index:1;padding-right:96px}
- .news-deco{display:block;position:absolute;z-index:2;width:150px;height:auto;right:-30px;bottom:-70px;transform:rotate(-12deg);filter:drop-shadow(0 12px 14px rgba(80,50,20,.25))}
+ .news-deco{display:block;position:absolute;z-index:2;width:150px;height:auto;right:-30px;bottom:-14px;transform:rotate(-12deg);filter:drop-shadow(0 12px 14px rgba(80,50,20,.25))}
  .end-deco{display:none!important}
 }
 .end-deco{display:flex;justify-content:center;margin:-24px 0 -26px;position:relative;z-index:1;pointer-events:none}
@@ -545,7 +545,7 @@ const favKey=k=>k.includes(SEP)?k:mainKey(k);
 const favIndexKeys=()=>[...new Set([...FAV].map(favKey))];
 // 졸업식·행사 준비 사이트 주소. 배포하면 아래 따옴표 안에 주소를 넣으세요. 비어 있으면 '준비 중'으로 보입니다.
 const SHOW_PARTNER_LINKS=false; // 졸업식 사이트·부자재몰 연결 (false면 숨김, 그 자리에 광고 문의 카드)
-const AD_FORM_URL=''; // 광고 문의 구글 폼 주소를 넣으면 하단과 계절 카드에 문의 버튼이 생겨요
+const AD_FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSfJkKhhNP8_mymRhyIvKVzBp_ocZCFpHAXriDjk5D2G9MbkaA/viewform'; // 광고 문의 구글 폼 주소를 넣으면 하단과 계절 카드에 문의 버튼이 생겨요
 (function(){var p=document.getElementById('footAd');if(p&&AD_FORM_URL){p.innerHTML='광고 문의 <a href="'+AD_FORM_URL+'" target="_blank" rel="noopener">문의하기 ↗</a>';p.hidden=false}})(); // 광고 문의 구글 폼 주소 (비어 있으면 '문의 곧 열려요')
 const SEASON_SITE_URL=''; // 졸업식 꽃 판매 플래너 (꽃시세 전용 단축 링크)
 const GRAD_PROMO_URL=''; // 부자재몰 졸업식 특별전 (꽃시세 전용 단축 링크)
