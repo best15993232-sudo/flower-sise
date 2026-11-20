@@ -20,12 +20,18 @@ jobs:
       - uses: actions/checkout@v5
       - name: 시세 받기
         run: python3 tools/snapshot.py
+      - name: 첫 화면 표 미리 넣기·꽃별 페이지 (시세 파일이 바뀌었을 때만)
+        # 실패하거나 검사에 걸리면 index.html·꽃별 페이지는 그대로 두고 시세 파일만 올려요
+        run: |
+          if [ -z "$(git status --porcelain data/snapshot.json)" ]; then echo "시세 그대로"; exit 0; fi
+          python3 tools/prerender.py || echo "::warning::첫 화면 표 미리 넣기 실패"
+          python3 tools/build_pages.py || echo "::warning::꽃별 페이지 만들기 실패"
       - name: 바뀌었으면 올리기
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -z "$(git status --porcelain data/snapshot.json)" ]; then echo "바뀐 것 없음"; exit 0; fi
-          git add data/snapshot.json
+          if [ -z "$(git status --porcelain data/snapshot.json index.html flower)" ]; then echo "바뀐 것 없음"; exit 0; fi
+          git add data/snapshot.json index.html flower
           git commit -m "시세 파일 갱신"
           for i in 1 2 3 4 5; do
             git pull --rebase -X theirs && git push && exit 0
