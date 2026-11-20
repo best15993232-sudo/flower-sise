@@ -30,8 +30,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ -z "$(git status --porcelain data/snapshot.json index.html flower)" ]; then echo "바뀐 것 없음"; exit 0; fi
-          git add data/snapshot.json index.html flower
+          if [ -z "$(git status --porcelain data/snapshot.json index.html flower sitemap.xml)" ]; then echo "바뀐 것 없음"; exit 0; fi
+          git add data/snapshot.json index.html flower sitemap.xml
           git commit -m "시세 파일 갱신"
           for i in 1 2 3 4 5; do
             git pull --rebase -X theirs && git push && exit 0

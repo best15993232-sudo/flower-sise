@@ -21,9 +21,26 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = 'https://best15993232-sudo.github.io/flower-sise/'
 SEP = '␟'
 # 주소용 영문 이름: 경매 품목명(원자료 그대로), 화면 이름, 다른 이름
+# 발행 기준 (사용자 결정 2026-11-20, B안): 1년 기록 153 경매일 중 120일 이상 거래, 1년 20,000속 이상,
+# 지난주 300속 이상. '절화'·'절지'·'허브'처럼 여러 꽃을 묶은 이름은 뺌. 나머지 품목은 flower/others.html 한 페이지.
 FLOWERS = {
-    'rose': ('장미', '장미', []),
+    'rose': ('장미', '장미', []), 'chrysanthemum': ('국화', '국화', []), 'gerbera': ('거베라', '거베라', []),
+    'lisianthus': ('리시안사스', '리시안셔스', []), 'stock': ('스톡크', '스토크', []), 'lily': ('백합', '백합', []),
+    'ruscus': ('루스커스', '루스커스', []), 'eucalyptus': ('유칼립투스', '유칼립투스', []), 'calla': ('칼라', '칼라', []),
+    'oxypetalum': ('옥시페탈륨', '옥시페탈륨', []), 'anthurium': ('안시리움', '안스리움', []), 'tulip': ('튜립', '튤립', []),
+    'alstroemeria': ('알스트메리아', '알스트로메리아', []), 'sunflower': ('해바라기', '해바라기', []),
+    'statice': ('스타티스', '스타티스', []), 'nomura': ('노무라', '노무라', []), 'borisacho': ('보리사초', '보리사초', []),
+    'gypsophila': ('안개', '안개꽃', []), 'aster': ('공작초', '공작초', []), 'delphinium': ('델피니움', '델피니움', []),
+    'chamomile': ('캐모마일', '캐모마일', []), 'hinoki': ('편백', '편백', []), 'panicum': ('파니쿰', '파니쿰', []),
+    'celosia': ('맨드라미', '맨드라미', []), 'marguerite': ('마가렛', '마가렛', []), 'dahlia': ('다알리아', '달리아', []),
+    'aspidistra': ('엽란', '엽란', []), 'marigold': ('메리골드', '메리골드', []), 'carnation': ('카네이션', '카네이션', []),
+    'dianthus': ('석죽', '석죽', []), 'gladiolus': ('글라디올러스', '글라디올러스', []), 'ammi': ('아미초', '아미초', []),
+    'scabiosa': ('스카비오사', '스카비오사', []), 'silene': ('시레네', '실레네', []), 'winter-jasmine': ('영춘화', '영춘화', []),
+    'gomphrena': ('천일홍', '천일홍', []), 'phlox': ('후록스', '플록스', []), 'cycas': ('소철', '소철', []),
+    'naengicho': ('냉이초', '냉이초', []), 'bullocho': ('불노초', '불로초', []), 'didiscus': ('디디스커스', '디디스커스', []),
+    'solidaster': ('솔리다스터', '솔리다스터', []), 'veronica': ('베로니카', '베로니카', []), 'solidago': ('솔리다고', '솔리다고', []),
 }
+GENERIC = {'절화', '절지', '허브'}
 MIN_VARIETY_QTY = 30      # 품종 표: 최근 경매일 거래량 30속 이상만
 MAX_VARIETIES = 30
 MIN_CMP_QTY = 100         # 지난주·2주 전·작년 비교: 그 주 거래량 100속 이상일 때만 %
@@ -98,6 +115,8 @@ details[open] summary{display:none}
 .chart svg{display:block;width:100%;height:auto}
 .cta{display:block;margin:40px 0 0;padding:15px;border-radius:14px;background:var(--accent);color:#fff;text-align:center;font-weight:700;text-decoration:none}
 .more{display:block;text-align:center;margin:14px 0 0;font-size:14px;font-weight:700;color:var(--accent);text-decoration:none}
+.links{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:14px;margin:12px 0 0}
+.links a{color:var(--accent);text-decoration:none;white-space:nowrap}
 .foot{font-size:12px;color:var(--ink-2);line-height:1.7;margin:40px 0 0;padding-top:16px;border-top:1px solid var(--line)}
 .foot a{color:var(--ink-2)}
 """
@@ -195,6 +214,68 @@ def month_bars(ms, hi, lo, full):
     return f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="달별 평균 경매가 막대">{"".join(out)}</svg>'
 
 
+def img_tag(raw):
+    return (f'<img src="../img/flowers/{urllib.parse.quote(raw)}.webp" alt="" width="72" height="72">'
+            if os.path.exists(os.path.join(ROOT, 'img', 'flowers', raw + '.webp')) else '')
+
+
+def other_links(cur):
+    links = ''.join(f'<a href="{s}.html">{esc(d)}</a>' for s, (_, d, _o) in sorted(FLOWERS.items(), key=lambda x: x[1][1]) if s != cur)
+    tail = '' if cur == 'others' else '<a href="others.html">기타 품목</a>'
+    return f'<h2>다른 꽃 시세</h2>\n<p class="links">{links}{tail}</p>'
+
+
+def others_page(snap):
+    """FLOWERS 에 없는 품목: 최근 경매일 품목별 평균가·거래량 한 표"""
+    meta, rows = snap['index']['meta'], snap['index']['rows']
+    L = meta.get('latestDate') or ''
+    cat = snap.get('catalog') or {}
+    if cat.get('date') != L:
+        raise ValueError(f"기타 품목: 자료 날짜({cat.get('date')})가 최근 경매일({L})과 달라요")
+    mine = {r for r, _d, _o in FLOWERS.values()}
+    q, a = defaultdict(int), defaultdict(int)
+    for x in cat.get('items') or []:
+        if x[0] not in mine and x[0] not in GENERIC and x[6]:
+            q[x[0]] += x[6]; a[x[0]] += x[7]
+    if not q:
+        raise ValueError('기타 품목: 거래가 없어요')
+    def tr(n):
+        w = rows.get(n + SEP + '*') or {}
+        c = chg_html(a[n] / q[n], w['wa']) if w.get('wa') and (w.get('wq') or 0) >= MIN_VARIETY_QTY else '<em class="flat">-</em>'
+        return f'<tr><td title="{esc(n)}">{esc(n)}</td><td>{num(a[n] / q[n])}원</td><td>{c}</td></tr>'
+    names = sorted(q, key=lambda n: (-q[n], n))
+    cols = '<colgroup><col class="c1"><col><col></colgroup>'
+    body = f"""<div class="hero"><div>
+<h1>기타 품목 경매 시세</h1>
+<p class="meta">{kd(L)} 본경매 · 1속 평균 · {len(names)}개 품목</p>
+</div></div>
+<h2>품목별 시세</h2>
+<p class="meta">거래 많은 순 · 품종·등급을 합친 평균</p>
+<div class="list"><table>{cols}<thead><tr><th>품목</th><th>평균가</th><th>지난주 대비</th></tr></thead><tbody>
+{chr(10).join(tr(n) for n in names)}
+</tbody></table></div>
+<a class="more" href="../">전체 꽃 시세 보기</a>
+{other_links('others')}"""
+    title = f'기타 꽃 경매 시세 · {kd(L)} 품목별 경매가 | 오늘의 양재 꽃시세'
+    desc = f'양재 화훼공판장 {kd(L)} 본경매 기타 품목 {len(names)}개의 평균 경매가와 지난주 대비. ' + ', '.join(names[:6]) + ' 등.'
+    return title, desc, [('꽃시세', '../'), ('기타 품목', None)], body, L, ''
+
+
+def check_others(t, snap):
+    err, cat = [], snap['catalog']
+    mine = {r for r, _d, _o in FLOWERS.values()}
+    q, a = defaultdict(int), defaultdict(int)
+    for x in cat['items']:
+        if x[0] not in mine and x[0] not in GENERIC and x[6]:
+            q[x[0]] += x[6]; a[x[0]] += x[7]
+    got = re.findall(r'<tr><td title="([^"]+)">[^<]*</td><td>([\d,]+)원</td>', t)
+    if sorted(html.unescape(n) for n, _ in got) != sorted(q): err.append('flower/others.html: 품목 목록 다름')
+    for n, pr in got:
+        n = html.unescape(n)
+        if pr != num(a[n] / q[n]): err.append(f'flower/others.html: {n} 평균가 다름')
+    return err
+
+
 def flower_page(slug, raw, disp, others, snap, hist):
     meta = snap['index']['meta']
     rows = snap['index']['rows']
@@ -226,7 +307,7 @@ def flower_page(slug, raw, disp, others, snap, hist):
     hero = f"""<div class="hero"><div>
 <h1>{esc(disp)} 경매 시세</h1>
 <p class="meta">{kd(L)} 본경매 · 1속 평균{name_note}</p>
-</div><img src="../img/flowers/{urllib.parse.quote(raw)}.webp" alt="" width="72" height="72"></div>
+</div>{img_tag(raw)}</div>
 {f'<p class="price">{num(la)}<span>원</span></p>' if traded else f'<p class="price">거래 없음</p><p class="meta">이날 본경매에는 {esc(disp)} 거래가 없었어요{last}</p>'}
 {f'<div class="tiles">{tiles}</div>' if tiles else ''}"""
 
@@ -296,7 +377,8 @@ def flower_page(slug, raw, disp, others, snap, hist):
 {w8}
 {yr}
 <a class="cta" href="../?fav={urllib.parse.quote(disp)}">{esc(disp)} 관심 꽃에 담기</a>
-<a class="more" href="../">전체 꽃 시세 보기</a>"""
+<a class="more" href="../">전체 꽃 시세 보기</a>
+{other_links(slug)}"""
     title = f'{disp} 시세 · 오늘 {disp} 경매가와 품종별 가격 | 오늘의 양재 꽃시세'
     have = [x for x, ok in (('품종·등급별 가격', traded), ('최근 8주', bool(w8)), ('지난 1년 흐름', bool(yr))) if ok]
     desc = ((f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} {disp} 평균 {num(la)}원(1속), 거래량 {num(top["lq"])}속.') if traded else
@@ -406,7 +488,24 @@ def main():
     except (ValueError, KeyError, TypeError) as e:
         print('꽃별 페이지 건너뜀 (파일 그대로):', e)
         return 0
-    err = verify(texts) + check_history(hist, snap)
+    if not a.only:
+        try:
+            t, d, c, b, L, n = others_page(snap)
+            texts['flower/others.html'] = page('flower/others.html', t, d, c, b, L, n)
+        except (ValueError, KeyError, TypeError) as e:
+            print('기타 품목 페이지 건너뜀 (파일 그대로):', e)
+            return 0
+        sm = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+              f'  <url><loc>{BASE}</loc></url>']
+        changed_day = snap['index']['meta'].get('latestDate') or ''
+        sm += [f'  <url><loc>{BASE}{p}</loc><lastmod>{changed_day}</lastmod></url>' for p in sorted(texts)]
+        texts['sitemap.xml'] = '\n'.join(sm + ['</urlset>']) + '\n'
+    err = verify({k: v for k, v in texts.items() if k.endswith('.html')}) + check_history(hist, snap)
+    if 'flower/others.html' in texts: err += check_others(texts['flower/others.html'], snap)
+    if 'sitemap.xml' in texts:
+        for u in re.findall(r'<loc>([^<]+)</loc>', texts['sitemap.xml']):
+            r = u[len(BASE):] or 'index.html'
+            if r not in texts and not os.path.exists(os.path.join(ROOT, r)): err.append(f'사이트맵 주소에 파일 없음: {u}')
     for s in slugs:
         p = f'flower/{s}.html'
         if p in texts: err += check_page(p, texts[p], FLOWERS[s][0], snap, hist)
