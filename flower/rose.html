@@ -14,163 +14,126 @@
 <meta name="theme-color" content="#F3EBDD">
 <link rel="icon" type="image/svg+xml" href="../img/favicon.svg?v=4">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Nanum+Pen+Script&display=swap">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "꽃시세", "item": "https://best15993232-sudo.github.io/flower-sise/"}, {"@type": "ListItem", "position": 2, "name": "장미", "item": "https://best15993232-sudo.github.io/flower-sise/flower/rose.html"}]}</script>
 <style>
-:root{--ivory:#F3EBDD;--paper:#FCF8F0;--paper-2:#F6EFE2;--line:#E2D5BF;--line-2:#ECE3D3;--ink:#2F2B26;--ink-2:#6B6257;--ink-3:#9A8F81;
---rose:#B8697A;--rose-2:#E9C3C8;--rose-bg:#F6E4E3;--sage:#8FA88C;--sage-bg:#E3EBDD;--forest:#2F3F34;--up:#B9443C;--down:#3D669B;--kraft:#B98549}
+:root{--bg:#F5EFE6;--card:#FFFDF9;--line:#EAE1D3;--ink:#2B2723;--ink-2:#7A7064;--accent:#2F3F34;--up:#C0463E;--down:#3B6CA8}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--ivory);color:var(--ink);font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:15px;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-main{max-width:640px;margin:0 auto;padding:14px 16px 56px}
-a{color:var(--rose)}
-.brand{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:17px;color:var(--forest);text-decoration:none}
-.brand span{color:var(--rose)}
-.crumb{font-size:13px;color:var(--ink-2);margin:10px 0 0}
-.crumb a{color:var(--ink-2)}
-.hero{position:relative;background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px 18px 16px;margin:14px 0 10px;box-shadow:0 12px 26px -20px rgba(80,50,20,.45)}
-.hero::before{content:"";position:absolute;top:-9px;left:28px;width:74px;height:20px;background:rgba(233,195,200,.75);transform:rotate(-4deg)}
-.hero-top{display:flex;gap:12px;align-items:flex-start}
-.hero-top img{width:84px;height:84px;object-fit:contain;flex:none;margin:-6px -4px 0 0}
-.hand{font-family:'Nanum Pen Script',cursive;font-size:20px;color:var(--rose);margin:0;line-height:1}
-h1{font-family:'Gowun Batang',serif;font-size:25px;line-height:1.3;margin:2px 0 4px}
-.chip{display:inline-block;font-size:12.5px;color:var(--ink-2);background:var(--paper-2);border:1px solid var(--line-2);border-radius:999px;padding:2px 10px}
-.price{font-size:34px;font-weight:800;letter-spacing:-.5px;margin:12px 0 0;line-height:1.2}
-.price small{font-size:15px;font-weight:600;color:var(--ink-2);margin-left:4px}
-.say{font-size:16px;font-weight:700;margin:4px 0 0}
-.sub{font-size:13px;color:var(--ink-2);margin:2px 0 0}
-.cmp{margin:14px 0 0;border-top:1px solid var(--line-2)}
-.cmp div{display:grid;grid-template-columns:1fr auto 76px;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line-2)}
-.cmp div:last-child{border-bottom:0;padding-bottom:0}
-.cmp span{font-size:14px;color:var(--ink-2)}
-.cmp span i{display:block;font-style:normal;font-size:12px;color:var(--ink-3);line-height:1.3}
-.cmp b{font-size:16px;text-align:right}
-.cmp em{font-style:normal;font-size:14px;font-weight:700;text-align:right}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:15px;line-height:1.55;word-break:keep-all;font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+main{max-width:600px;margin:0 auto;padding:18px 20px 64px}
+a{color:inherit}
+.top{font-size:13px;color:var(--ink-2)}
+.top a{text-decoration:none;font-weight:700;color:var(--accent)}
+.hero{display:flex;justify-content:space-between;align-items:flex-start;margin:22px 0 0}
+.hero img{width:72px;height:72px;object-fit:contain;margin-top:-6px}
+h1{font-size:22px;font-weight:800;margin:0;letter-spacing:-.5px}
+.meta{font-size:13px;color:var(--ink-2);margin:2px 0 0}
+.price{font-size:36px;font-weight:800;letter-spacing:-1px;margin:14px 0 0;line-height:1.1}
+.price span{font-size:15px;font-weight:600;color:var(--ink-2);margin-left:2px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0 0}
+.tiles div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.tiles span{display:block;font-size:13px;color:var(--ink-2);white-space:nowrap}
+.tiles b{display:block;font-size:17px;margin-top:2px}
 em{font-style:normal;font-weight:700}
-.up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--ink-3)}
-.notice{font-size:12.5px;color:var(--ink-2);margin:0 2px}
-h2{font-size:18px;margin:34px 0 4px}
-.desc{font-size:13px;color:var(--ink-2);margin:0 0 10px}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:14.5px}
-th,td{padding:10px 10px;border-bottom:1px solid var(--line-2);text-align:left}
-th{background:var(--paper-2);font-size:12.5px;color:var(--ink-2);font-weight:700}
-tr:last-child td{border-bottom:0}
-td.n,th.n{text-align:right;white-space:nowrap}
-td.k{white-space:nowrap}
-tr.now td{font-weight:800;background:var(--rose-bg)}
-tr.hi td:first-child{box-shadow:inset 4px 0 var(--rose)}
-tr.lo td:first-child{box-shadow:inset 4px 0 var(--sage)}
-details{margin:10px 0 0}
-summary{cursor:pointer;list-style:none;display:block;text-align:center;font-size:14px;font-weight:700;color:var(--forest);background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
-summary::-webkit-details-marker{display:none}
-details[open] summary{margin-bottom:10px}
-.chart{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 8px 4px;margin:0 0 10px}
+.up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--ink-2)}
+h2{font-size:17px;font-weight:800;margin:40px 0 0}
+h2+.meta{margin-bottom:12px}
+.list{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px}
+.list table{width:100%;border-collapse:collapse;table-layout:fixed}
+.list th{font-size:13px;font-weight:600;color:var(--ink-2);text-align:left;padding:12px 0 8px}
+.list td{padding:12px 0;border-top:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list th:nth-child(n+2),.list td:nth-child(n+2){text-align:right}
+.list col.c1{width:46%}
+details summary{list-style:none;cursor:pointer;text-align:center;font-size:14px;font-weight:700;color:var(--accent);padding:12px 0;border-top:1px solid var(--line)}
+details summary::-webkit-details-marker{display:none}
+details[open] summary{display:none}
+.chart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 10px 6px}
 .chart svg{display:block;width:100%;height:auto}
-.legend{display:flex;gap:14px;font-size:12.5px;color:var(--ink-2);margin:0 0 8px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.cta{display:block;margin:12px 0 0;padding:14px;border-radius:14px;background:var(--forest);color:#fff;text-align:center;font-weight:700;text-decoration:none}
-.cta.line{background:#fff;color:var(--forest);border:1.5px solid var(--forest)}
-.foot{font-size:12px;color:var(--ink-3);line-height:1.7;margin:30px 0 0}
+.cta{display:block;margin:40px 0 0;padding:15px;border-radius:14px;background:var(--accent);color:#fff;text-align:center;font-weight:700;text-decoration:none}
+.more{display:block;text-align:center;margin:14px 0 0;font-size:14px;font-weight:700;color:var(--accent);text-decoration:none}
+.foot{font-size:12px;color:var(--ink-2);line-height:1.7;margin:40px 0 0;padding-top:16px;border-top:1px solid var(--line)}
+.foot a{color:var(--ink-2)}
 </style>
 </head>
 <body>
 <main>
-<a class="brand" href="../"><span>✿</span>오늘의 양재 꽃시세</a>
-<nav class="crumb" aria-label="위치"><a href="../">꽃시세</a> › <span>장미</span></nav>
-<section class="hero">
-<div class="hero-top"><div style="flex:1;min-width:0">
-<p class="hand">today's rose</p>
+<nav class="top" aria-label="위치"><a href="../">✿ 오늘의 양재 꽃시세</a> › <span>장미</span></nav>
+<div class="hero"><div>
 <h1>장미 경매 시세</h1>
-<span class="chip">11월 20일(금) 본경매 · 1속(단) 평균</span>
-</div><img src="../img/flowers/%EC%9E%A5%EB%AF%B8.webp" alt="" width="84" height="84"></div>
-<p class="price">11,584원<small>/속</small></p>
-<p class="say">지난주 평균보다 <span class="down">6.0% 내렸어요</span></p>
-<p class="sub">이날 거래량 16,023속</p>
-<div class="cmp"><div><span>지난주<i>11.9~11.13</i></span><b>12,325원</b><em class="down">▼ 6.0%</em></div><div><span>2주 전<i>11.2~11.6</i></span><b>10,657원</b><em class="up">▲ 8.7%</em></div><div><span>작년 같은 주<i>11.10~11.14</i></span><b>13,497원</b><em class="down">▼ 14.2%</em></div></div>
-<p class="sub" style="margin-top:8px">오른쪽 %는 최근 경매가(11,584원)가 그때보다 얼마나 바뀌었는지예요.</p>
-</section>
-<p class="notice">경매 낙찰가예요. 꽃집에서 사는 값(소매가)이나 도매상 판매가와 달라요.</p>
-<h2>품종별 장미 시세</h2>
-<p class="desc">11월 20일(금) 본경매, 거래량 30속 이상 품종을 거래량 많은 순으로 보여 줘요. 그 밖에 111품종이 더 거래됐어요.</p>
-<table><thead><tr><th>품종</th><th class="n">평균가</th><th class="n">거래량</th><th class="n">지난주보다</th></tr></thead><tbody>
-<tr><td>푸에고</td><td class="n">11,897원</td><td class="n">1,925속</td><td class="n"><em class="down">▼ 10.3%</em></td></tr>
-<tr><td>하젤</td><td class="n">8,920원</td><td class="n">1,644속</td><td class="n"><em class="down">▼ 6.2%</em></td></tr>
-<tr><td>쥬밀리아</td><td class="n">11,126원</td><td class="n">1,237속</td><td class="n"><em class="up">▲ 5.0%</em></td></tr>
-<tr><td>빅토리아</td><td class="n">11,126원</td><td class="n">1,236속</td><td class="n"><em class="up">▲ 9.7%</em></td></tr>
-<tr><td>헤라</td><td class="n">9,917원</td><td class="n">692속</td><td class="n"><em class="down">▼ 7.1%</em></td></tr>
-<tr><td>차밍레이스(sp)</td><td class="n">17,836원</td><td class="n">676속</td><td class="n"><em class="down">▼ 5.2%</em></td></tr>
-<tr><td>마루시아</td><td class="n">9,293원</td><td class="n">616속</td><td class="n"><em class="down">▼ 10.4%</em></td></tr>
-<tr><td>클라린스</td><td class="n">11,998원</td><td class="n">534속</td><td class="n"><em class="down">▼ 8.1%</em></td></tr>
-<tr><td>자나(sp)</td><td class="n">10,956원</td><td class="n">355속</td><td class="n"><em class="down">▼ 20.0%</em></td></tr>
-<tr><td>실바써니(sp)</td><td class="n">12,132원</td><td class="n">352속</td><td class="n"><em class="down">▼ 28.2%</em></td></tr>
-</tbody></table><details><summary>품종 20개 더 보기</summary><table><thead><tr><th>품종</th><th class="n">평균가</th><th class="n">거래량</th><th class="n">지난주보다</th></tr></thead><tbody>
-<tr><td>장미</td><td class="n">7,851원</td><td class="n">326속</td><td class="n"><em class="down">▼ 17.7%</em></td></tr>
-<tr><td>굿무드(sp)</td><td class="n">14,872원</td><td class="n">318속</td><td class="n"><em class="down">▼ 6.1%</em></td></tr>
-<tr><td>만다라</td><td class="n">10,575원</td><td class="n">256속</td><td class="n"><em class="down">▼ 2.3%</em></td></tr>
-<tr><td>웨딩인바이트(sp)</td><td class="n">15,285원</td><td class="n">221속</td><td class="n"><em class="up">▲ 9.2%</em></td></tr>
-<tr><td>스노우블라썸(sp)</td><td class="n">14,478원</td><td class="n">211속</td><td class="n"><em class="down">▼ 13.9%</em></td></tr>
-<tr><td>비탈</td><td class="n">9,136원</td><td class="n">199속</td><td class="n"><em class="down">▼ 15.2%</em></td></tr>
-<tr><td>캐롤라인</td><td class="n">10,412원</td><td class="n">196속</td><td class="n"><em class="up">▲ 22.1%</em></td></tr>
-<tr><td>핑크아미</td><td class="n">7,462원</td><td class="n">186속</td><td class="n"><em class="down">▼ 7.6%</em></td></tr>
-<tr><td>일레오스</td><td class="n">9,249원</td><td class="n">179속</td><td class="n"><em class="down">▼ 5.7%</em></td></tr>
-<tr><td>리바이벌</td><td class="n">11,199원</td><td class="n">146속</td><td class="n"><em class="down">▼ 0.1%</em></td></tr>
-<tr><td>비포썬셋(sp)</td><td class="n">8,485원</td><td class="n">137속</td><td class="n"><em class="down">▼ 6.4%</em></td></tr>
-<tr><td>파엘라</td><td class="n">11,284원</td><td class="n">137속</td><td class="n"><em class="down">▼ 1.4%</em></td></tr>
-<tr><td>디온(sp)</td><td class="n">9,832원</td><td class="n">127속</td><td class="n"><em class="up">▲ 14.3%</em></td></tr>
-<tr><td>제제벨(sp)</td><td class="n">13,425원</td><td class="n">127속</td><td class="n"><em class="up">▲ 1.0%</em></td></tr>
-<tr><td>햇살(sp)</td><td class="n">11,252원</td><td class="n">125속</td><td class="n"><em class="down">▼ 6.9%</em></td></tr>
-<tr><td>맨스필드파크(sp)</td><td class="n">20,081원</td><td class="n">120속</td><td class="n"><em class="down">▼ 29.3%</em></td></tr>
-<tr><td>올스타</td><td class="n">7,523원</td><td class="n">119속</td><td class="n"><em class="down">▼ 19.7%</em></td></tr>
-<tr><td>블루밍(sp)</td><td class="n">8,603원</td><td class="n">118속</td><td class="n"><em class="down">▼ 22.8%</em></td></tr>
-<tr><td>부루트</td><td class="n">8,310원</td><td class="n">117속</td><td class="n"><em class="down">▼ 10.9%</em></td></tr>
-<tr><td>혼합(스프레이)</td><td class="n">12,497원</td><td class="n">116속</td><td class="n"><em class="down">▼ 7.6%</em></td></tr>
-</tbody></table></details>
-<h2>등급별 장미 시세</h2>
-<p class="desc">11월 20일(금) 본경매, 모든 품종을 합친 등급별 평균이에요. 특 → 상 → 보 순서예요.</p>
-<table><thead><tr><th>등급</th><th class="n">평균가</th><th class="n">거래량</th></tr></thead><tbody>
-<tr><td class="k">특1</td><td class="n">21,248원</td><td class="n">867속</td></tr>
-<tr><td class="k">특2</td><td class="n">14,094원</td><td class="n">6,060속</td></tr>
-<tr><td class="k">특3</td><td class="n">9,739원</td><td class="n">3,595속</td></tr>
-<tr><td class="k">상1</td><td class="n">10,135원</td><td class="n">2,689속</td></tr>
-<tr><td class="k">상2</td><td class="n">8,054원</td><td class="n">892속</td></tr>
-<tr><td class="k">상3</td><td class="n">6,463원</td><td class="n">1,899속</td></tr>
-<tr><td class="k">보3</td><td class="n">2,796원</td><td class="n">21속</td></tr>
-</tbody></table>
-<h2>최근 8주 장미 시세</h2>
-<p class="desc">주마다 월·수·금 본경매를 거래량으로 가중한 평균이에요. 8주 전보다 <span class="up">▲ 80.6%</span>.</p>
-<div class="chart"><svg viewBox="0 0 340 150" role="img" aria-label="최근 8주 평균 경매가 그래프"><polygon points="12.0,124 12.0,110.0 57.1,112.7 102.3,94.6 147.4,88.3 192.6,72.5 237.7,64.2 282.9,59.4 328.0,37.3 328.0,124" fill="#F6E4E3" opacity=".7"/><polyline points="12.0,110.0 57.1,112.7 102.3,94.6 147.4,88.3 192.6,72.5 237.7,64.2 282.9,59.4 328.0,37.3" fill="none" stroke="#B8697A" stroke-width="2.5" stroke-linejoin="round"/><circle cx="12.0" cy="110.0" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="57.1" cy="112.7" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="102.3" cy="94.6" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="147.4" cy="88.3" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="192.6" cy="72.5" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="237.7" cy="64.2" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="282.9" cy="59.4" r="3" fill="#fff" stroke="#B8697A" stroke-width="2"/><circle cx="328.0" cy="37.3" r="5" fill="#B8697A" stroke="#B8697A" stroke-width="2"/><text x="57.1" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">9/28</text><text x="147.4" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">10/12</text><text x="237.7" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">10/26</text><text x="328.0" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">11/9</text><text x="328.0" y="27.3" font-size="12.5" font-weight="700" fill="#2F2B26" text-anchor="end">12,325원</text><text x="57.1" y="130.7" font-size="11.5" fill="#6B6257" text-anchor="middle">6,624원</text></svg></div>
-<details><summary>주별 숫자 보기</summary><table><thead><tr><th>주</th><th class="n">평균가</th><th class="n">전 주보다</th></tr></thead><tbody>
-<tr><td class="k">9/21주</td><td class="n">6,825원</td><td class="n">-</td></tr>
-<tr><td class="k">9/28주</td><td class="n">6,624원</td><td class="n"><em class="down">▼ 2.9%</em></td></tr>
-<tr><td class="k">10/5주</td><td class="n">7,989원</td><td class="n"><em class="up">▲ 20.6%</em></td></tr>
-<tr><td class="k">10/12주</td><td class="n">8,469원</td><td class="n"><em class="up">▲ 6.0%</em></td></tr>
-<tr><td class="k">10/19주</td><td class="n">9,661원</td><td class="n"><em class="up">▲ 14.1%</em></td></tr>
-<tr><td class="k">10/26주</td><td class="n">10,293원</td><td class="n"><em class="up">▲ 6.5%</em></td></tr>
-<tr><td class="k">11/2주</td><td class="n">10,657원</td><td class="n"><em class="up">▲ 3.5%</em></td></tr>
-<tr class="now"><td class="k">11/9주 (지난주)</td><td class="n">12,325원</td><td class="n"><em class="up">▲ 15.7%</em></td></tr>
-</tbody></table></details>
-<h2>장미 1년 시세 흐름</h2>
-<p class="desc">지난 1년 장미 평균은 <b>9,959원</b>이었어요. 가장 비싼 달은 <b class="up">12월 14,122원</b>, 가장 싼 달은 <b class="down">7월 5,624원</b>이었어요.</p>
-<div class="chart"><div class="legend"><span><i style="background:#B8697A"></i>가장 비싼 달</span><span><i style="background:#8FA88C"></i>가장 싼 달</span><span><i style="background:#E2D5BF;opacity:.5;outline:1px dashed #C9B89C"></i>일부 날짜만</span></div><svg viewBox="0 0 340 140" role="img" aria-label="달별 평균 경매가 막대"><rect x="7.0" y="22.8" width="19.5" height="95.2" rx="3" fill="#E2D5BF" fill-opacity=".45" stroke="#C9B89C" stroke-dasharray="3 2"/><text x="16.8" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">11</text><rect x="32.5" y="10.0" width="19.5" height="108.0" rx="3" fill="#B8697A"/><text x="42.3" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">12</text><rect x="58.1" y="21.8" width="19.5" height="96.2" rx="3" fill="#E2D5BF"/><text x="67.8" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">1</text><rect x="83.6" y="17.1" width="19.5" height="100.9" rx="3" fill="#E2D5BF"/><text x="93.4" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">2</text><rect x="109.2" y="46.7" width="19.5" height="71.3" rx="3" fill="#E2D5BF"/><text x="118.9" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">3</text><rect x="134.7" y="54.1" width="19.5" height="63.9" rx="3" fill="#E2D5BF"/><text x="144.5" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">4</text><rect x="160.2" y="31.1" width="19.5" height="86.9" rx="3" fill="#E2D5BF"/><text x="170.0" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">5</text><rect x="185.8" y="62.9" width="19.5" height="55.1" rx="3" fill="#E2D5BF"/><text x="195.5" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">6</text><rect x="211.3" y="75.0" width="19.5" height="43.0" rx="3" fill="#8FA88C"/><text x="221.1" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">7</text><rect x="236.8" y="47.6" width="19.5" height="70.4" rx="3" fill="#E2D5BF"/><text x="246.6" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">8</text><rect x="262.4" y="43.9" width="19.5" height="74.1" rx="3" fill="#E2D5BF"/><text x="272.2" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">9</text><rect x="287.9" y="50.0" width="19.5" height="68.0" rx="3" fill="#E2D5BF"/><text x="297.7" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">10</text><rect x="313.5" y="29.2" width="19.5" height="88.8" rx="3" fill="#E2D5BF" fill-opacity=".45" stroke="#C9B89C" stroke-dasharray="3 2"/><text x="323.2" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">11</text></svg></div>
-<details><summary>달별 숫자 보기</summary><table><thead><tr><th>달</th><th class="n">평균가</th><th class="n">거래량</th></tr></thead><tbody>
-<tr><td class="k">25년 11월 <span class="sub">(일부)</span></td><td class="n">12,444원</td><td class="n">58,498속</td></tr>
-<tr class="hi"><td class="k">25년 12월</td><td class="n">14,122원</td><td class="n">240,633속</td></tr>
-<tr><td class="k">26년 1월</td><td class="n">12,582원</td><td class="n">178,861속</td></tr>
-<tr><td class="k">26년 2월</td><td class="n">13,195원</td><td class="n">193,836속</td></tr>
-<tr><td class="k">26년 3월</td><td class="n">9,320원</td><td class="n">227,837속</td></tr>
-<tr><td class="k">26년 4월</td><td class="n">8,351원</td><td class="n">243,369속</td></tr>
-<tr><td class="k">26년 5월</td><td class="n">11,367원</td><td class="n">290,469속</td></tr>
-<tr><td class="k">26년 6월</td><td class="n">7,205원</td><td class="n">269,109속</td></tr>
-<tr class="lo"><td class="k">26년 7월</td><td class="n">5,624원</td><td class="n">271,797속</td></tr>
-<tr><td class="k">26년 8월</td><td class="n">9,208원</td><td class="n">212,193속</td></tr>
-<tr><td class="k">26년 9월</td><td class="n">9,691원</td><td class="n">202,725속</td></tr>
-<tr><td class="k">26년 10월</td><td class="n">8,897원</td><td class="n">237,035속</td></tr>
-<tr><td class="k">26년 11월 <span class="sub">(일부)</span></td><td class="n">11,616원</td><td class="n">162,108속</td></tr>
-</tbody></table></details>
-<p class="desc" style="margin-top:10px">2025.11.21 ~ 2026.11.20 본경매 153일 기록, 품종·등급을 합친 평균이에요. 한 해 관측값이라 해마다 같은 흐름이라는 뜻은 아니에요. 처음과 마지막 달은 일부 날짜만 있고, 설·추석 연휴에는 경매가 없었어요.</p>
-<a class="cta" href="../?fav=%EC%9E%A5%EB%AF%B8">☆ 장미 관심 꽃에 담기</a>
-<a class="cta line" href="../">전체 꽃 시세 보기 →</a>
-<p class="foot">출처: 한국농수산식품유통공사 화훼유통정보시스템, 양재 aT 화훼공판장 절화 본경매. 경매 낙찰가예요. 소매가·도매상 판매가와 달라요. <a href="../privacy.html">개인정보처리방침</a><br>마지막 변경일 2026-11-20</p>
+<p class="meta">11월 20일(금) 본경매 · 1속 평균</p>
+</div><img src="../img/flowers/%EC%9E%A5%EB%AF%B8.webp" alt="" width="72" height="72"></div>
+<p class="price">11,584<span>원</span></p>
+<div class="tiles"><div><span>지난주보다</span><b class="down">▼ 6.0%</b></div><div><span>2주 전보다</span><b class="up">▲ 8.7%</b></div><div><span>작년보다</span><b class="down">▼ 14.2%</b></div></div>
+<h2>품종별 시세</h2>
+<p class="meta">11월 20일(금) · 거래 많은 순</p>
+<div class="list"><table><colgroup><col class="c1"><col><col></colgroup><thead><tr><th>품종</th><th>평균가</th><th>지난주 대비</th></tr></thead><tbody>
+<tr><td title="푸에고">푸에고</td><td>11,897원</td><td><em class="down">▼ 10.3%</em></td></tr>
+<tr><td title="하젤">하젤</td><td>8,920원</td><td><em class="down">▼ 6.2%</em></td></tr>
+<tr><td title="쥬밀리아">쥬밀리아</td><td>11,126원</td><td><em class="up">▲ 5.0%</em></td></tr>
+<tr><td title="빅토리아">빅토리아</td><td>11,126원</td><td><em class="up">▲ 9.7%</em></td></tr>
+<tr><td title="헤라">헤라</td><td>9,917원</td><td><em class="down">▼ 7.1%</em></td></tr>
+<tr><td title="차밍레이스(sp)">차밍레이스(sp)</td><td>17,836원</td><td><em class="down">▼ 5.2%</em></td></tr>
+<tr><td title="마루시아">마루시아</td><td>9,293원</td><td><em class="down">▼ 10.4%</em></td></tr>
+<tr><td title="클라린스">클라린스</td><td>11,998원</td><td><em class="down">▼ 8.1%</em></td></tr>
+<tr><td title="자나(sp)">자나(sp)</td><td>10,956원</td><td><em class="down">▼ 20.0%</em></td></tr>
+<tr><td title="실바써니(sp)">실바써니(sp)</td><td>12,132원</td><td><em class="down">▼ 28.2%</em></td></tr>
+</tbody></table><details><summary>20개 더 보기</summary><table><colgroup><col class="c1"><col><col></colgroup><tbody>
+<tr><td title="장미">장미</td><td>7,851원</td><td><em class="down">▼ 17.7%</em></td></tr>
+<tr><td title="굿무드(sp)">굿무드(sp)</td><td>14,872원</td><td><em class="down">▼ 6.1%</em></td></tr>
+<tr><td title="만다라">만다라</td><td>10,575원</td><td><em class="down">▼ 2.3%</em></td></tr>
+<tr><td title="웨딩인바이트(sp)">웨딩인바이트(sp)</td><td>15,285원</td><td><em class="up">▲ 9.2%</em></td></tr>
+<tr><td title="스노우블라썸(sp)">스노우블라썸(sp)</td><td>14,478원</td><td><em class="down">▼ 13.9%</em></td></tr>
+<tr><td title="비탈">비탈</td><td>9,136원</td><td><em class="down">▼ 15.2%</em></td></tr>
+<tr><td title="캐롤라인">캐롤라인</td><td>10,412원</td><td><em class="up">▲ 22.1%</em></td></tr>
+<tr><td title="핑크아미">핑크아미</td><td>7,462원</td><td><em class="down">▼ 7.6%</em></td></tr>
+<tr><td title="일레오스">일레오스</td><td>9,249원</td><td><em class="down">▼ 5.7%</em></td></tr>
+<tr><td title="리바이벌">리바이벌</td><td>11,199원</td><td><em class="down">▼ 0.1%</em></td></tr>
+<tr><td title="비포썬셋(sp)">비포썬셋(sp)</td><td>8,485원</td><td><em class="down">▼ 6.4%</em></td></tr>
+<tr><td title="파엘라">파엘라</td><td>11,284원</td><td><em class="down">▼ 1.4%</em></td></tr>
+<tr><td title="디온(sp)">디온(sp)</td><td>9,832원</td><td><em class="up">▲ 14.3%</em></td></tr>
+<tr><td title="제제벨(sp)">제제벨(sp)</td><td>13,425원</td><td><em class="up">▲ 1.0%</em></td></tr>
+<tr><td title="햇살(sp)">햇살(sp)</td><td>11,252원</td><td><em class="down">▼ 6.9%</em></td></tr>
+<tr><td title="맨스필드파크(sp)">맨스필드파크(sp)</td><td>20,081원</td><td><em class="down">▼ 29.3%</em></td></tr>
+<tr><td title="올스타">올스타</td><td>7,523원</td><td><em class="down">▼ 19.7%</em></td></tr>
+<tr><td title="블루밍(sp)">블루밍(sp)</td><td>8,603원</td><td><em class="down">▼ 22.8%</em></td></tr>
+<tr><td title="부루트">부루트</td><td>8,310원</td><td><em class="down">▼ 10.9%</em></td></tr>
+<tr><td title="혼합(스프레이)">혼합(스프레이)</td><td>12,497원</td><td><em class="down">▼ 7.6%</em></td></tr>
+</tbody></table></details></div>
+<h2>등급별 시세</h2>
+<p class="meta">11월 20일(금) · 모든 품종 합계</p>
+<div class="list"><table><colgroup><col class="c1"><col><col></colgroup><thead><tr><th>등급</th><th>평균가</th><th>거래량</th></tr></thead><tbody>
+<tr><td>특1</td><td>21,248원</td><td>867속</td></tr>
+<tr><td>특2</td><td>14,094원</td><td>6,060속</td></tr>
+<tr><td>특3</td><td>9,739원</td><td>3,595속</td></tr>
+<tr><td>상1</td><td>10,135원</td><td>2,689속</td></tr>
+<tr><td>상2</td><td>8,054원</td><td>892속</td></tr>
+<tr><td>상3</td><td>6,463원</td><td>1,899속</td></tr>
+<tr><td>보3</td><td>2,796원</td><td>21속</td></tr>
+</tbody></table></div>
+<h2>최근 8주 흐름</h2>
+<p class="meta">주 평균 · 8주 전 대비 <em class="up">▲ 80.6%</em></p>
+<div class="chart"><svg viewBox="0 0 340 150" role="img" aria-label="최근 8주 평균 경매가 그래프"><polygon points="12.0,124 12.0,110.0 57.1,112.7 102.3,94.6 147.4,88.3 192.6,72.5 237.7,64.2 282.9,59.4 328.0,37.3 328.0,124" fill="#2F3F34" opacity=".06"/><polyline points="12.0,110.0 57.1,112.7 102.3,94.6 147.4,88.3 192.6,72.5 237.7,64.2 282.9,59.4 328.0,37.3" fill="none" stroke="#2F3F34" stroke-width="2.2" stroke-linejoin="round"/><circle cx="12.0" cy="110.0" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="57.1" cy="112.7" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="102.3" cy="94.6" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="147.4" cy="88.3" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="192.6" cy="72.5" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="237.7" cy="64.2" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="282.9" cy="59.4" r="3" fill="#fff" stroke="#2F3F34" stroke-width="2"/><circle cx="328.0" cy="37.3" r="5" fill="#2F3F34" stroke="#2F3F34" stroke-width="2"/><text x="57.1" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">9/28</text><text x="147.4" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">10/12</text><text x="237.7" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">10/26</text><text x="328.0" y="144" font-size="11" fill="#9A8F81" text-anchor="middle">11/9</text><text x="328.0" y="27.3" font-size="12.5" font-weight="700" fill="#2F2B26" text-anchor="end">12,325원</text><text x="57.1" y="130.7" font-size="11.5" fill="#6B6257" text-anchor="middle">6,624원</text></svg></div>
+<h2>지난 1년 흐름</h2>
+<p class="meta"><em class="up">12월</em> 가장 비쌈 14,122원 · <em class="down">7월</em> 가장 쌈 5,624원</p>
+<div class="chart"><svg viewBox="0 0 340 140" role="img" aria-label="달별 평균 경매가 막대"><rect x="7.0" y="22.8" width="19.5" height="95.2" rx="3" fill="#E3D8C6" fill-opacity=".45" stroke="#C9B89C" stroke-dasharray="3 2"/><text x="16.8" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">11</text><rect x="32.5" y="10.0" width="19.5" height="108.0" rx="3" fill="#C0463E"/><text x="42.3" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">12</text><rect x="58.1" y="21.8" width="19.5" height="96.2" rx="3" fill="#E3D8C6"/><text x="67.8" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">1</text><rect x="83.6" y="17.1" width="19.5" height="100.9" rx="3" fill="#E3D8C6"/><text x="93.4" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">2</text><rect x="109.2" y="46.7" width="19.5" height="71.3" rx="3" fill="#E3D8C6"/><text x="118.9" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">3</text><rect x="134.7" y="54.1" width="19.5" height="63.9" rx="3" fill="#E3D8C6"/><text x="144.5" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">4</text><rect x="160.2" y="31.1" width="19.5" height="86.9" rx="3" fill="#E3D8C6"/><text x="170.0" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">5</text><rect x="185.8" y="62.9" width="19.5" height="55.1" rx="3" fill="#E3D8C6"/><text x="195.5" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">6</text><rect x="211.3" y="75.0" width="19.5" height="43.0" rx="3" fill="#3B6CA8"/><text x="221.1" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">7</text><rect x="236.8" y="47.6" width="19.5" height="70.4" rx="3" fill="#E3D8C6"/><text x="246.6" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">8</text><rect x="262.4" y="43.9" width="19.5" height="74.1" rx="3" fill="#E3D8C6"/><text x="272.2" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">9</text><rect x="287.9" y="50.0" width="19.5" height="68.0" rx="3" fill="#E3D8C6"/><text x="297.7" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">10</text><rect x="313.5" y="29.2" width="19.5" height="88.8" rx="3" fill="#E3D8C6" fill-opacity=".45" stroke="#C9B89C" stroke-dasharray="3 2"/><text x="323.2" y="133" font-size="10.5" fill="#9A8F81" text-anchor="middle">11</text></svg></div>
+<details style="margin-top:6px"><summary>달별 숫자 보기</summary><div class="list"><table><colgroup><col class="c1"><col><col></colgroup><thead><tr><th>달</th><th>평균가</th><th>거래량</th></tr></thead><tbody>
+<tr><td>25년 11월 (일부)</td><td>12,444원</td><td>58,498속</td></tr>
+<tr><td>25년 12월</td><td>14,122원</td><td>240,633속</td></tr>
+<tr><td>26년 1월</td><td>12,582원</td><td>178,861속</td></tr>
+<tr><td>26년 2월</td><td>13,195원</td><td>193,836속</td></tr>
+<tr><td>26년 3월</td><td>9,320원</td><td>227,837속</td></tr>
+<tr><td>26년 4월</td><td>8,351원</td><td>243,369속</td></tr>
+<tr><td>26년 5월</td><td>11,367원</td><td>290,469속</td></tr>
+<tr><td>26년 6월</td><td>7,205원</td><td>269,109속</td></tr>
+<tr><td>26년 7월</td><td>5,624원</td><td>271,797속</td></tr>
+<tr><td>26년 8월</td><td>9,208원</td><td>212,193속</td></tr>
+<tr><td>26년 9월</td><td>9,691원</td><td>202,725속</td></tr>
+<tr><td>26년 10월</td><td>8,897원</td><td>237,035속</td></tr>
+<tr><td>26년 11월 (일부)</td><td>11,616원</td><td>162,108속</td></tr>
+</tbody></table></div></details>
+<a class="cta" href="../?fav=%EC%9E%A5%EB%AF%B8">장미 관심 꽃에 담기</a>
+<a class="more" href="../">전체 꽃 시세 보기</a>
+<p class="foot">1년 흐름은 2025.11.21~2026.11.20 본경매 153일, 품종·등급을 합친 장미 평균이에요. 한 해 관측값이라 해마다 같다는 뜻은 아니에요. 점선 막대는 일부 날짜만 있는 달이에요.<br>경매 낙찰가예요. 꽃집 소매가나 도매상 판매가와 달라요.<br>출처: 한국농수산식품유통공사 화훼유통정보시스템 (양재 aT 화훼공판장 절화 본경매)<br><a href="../privacy.html">개인정보처리방침</a> · 마지막 변경일 2026-11-20</p>
 </main>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "8be9a26d6f3f4182aff85b28dbce6b00"}'></script>
 </body>
