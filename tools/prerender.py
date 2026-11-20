@@ -10,6 +10,11 @@ import functools, html, http.server, json, os, re, shutil, socket, subprocess, s
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INDEX = os.path.join(ROOT, 'index.html')
 IDS = ['dayTitle', 'daySub', 'summary', 'rises', 'falls', 'todayItems']
+SEP = '␟'
+# 화면 이름 → 시세 파일 키 (index.html 의 MAIN_ALIAS·DISP 와 같게)
+SPECIAL = {'절화 전체': '*' + SEP + '*', '국화 백선(대국)': '국화' + SEP + '백선', '안개꽃': '안개' + SEP + '*',
+           '리시안셔스': '리시안사스' + SEP + '*', '알스트로메리아': '알스트메리아' + SEP + '*'}
+DISP = {'리시안사스': '리시안셔스', '안개': '안개꽃', '알스트메리아': '알스트로메리아', '튜립': '튤립', '하이페리콤': '히페리쿰', '불노초': '불로초'}
 
 
 def chrome():
@@ -64,6 +69,24 @@ def check(o):
     for i in IDS:
         if '<!--' in o[i] or 'sk"' in o[i]:
             raise RuntimeError(f'{i} 에 불러오는 중 모양이나 주석이 섞였어요')
+    # 가격 맞춰 보기: 표에 나온 가격 = 시세 파일의 그 품목 최근 경매 평균가
+    ix = (snap.get('index') or {}).get('rows') or {}
+    if o['date'] == latest:
+        names = dict(SPECIAL)
+        for raw, disp in DISP.items():
+            names.setdefault(disp, raw + SEP + '*')
+        pairs = re.findall(r'<span class="r-name">([^<]+)(?:<small[^>]*>[^<]*</small>)?<span class="chev">.*?<span class="r-price">([^<]+)</span>', o['todayItems'])
+        pairs += re.findall(r'<span class="rn">([^<]+)</span><span class="rp">([^<]+)</span>', o['rises'] + o['falls'])
+        bad = []
+        for n, price in pairs:
+            n = html.unescape(n).strip()
+            x = ix.get(names.get(n, n + SEP + '*')) or {}
+            if x.get('la') and price != f"{x['la']:,}원":
+                bad.append(f'{n} {price} / {x["la"]:,}원')
+        if bad:
+            raise RuntimeError('시세 파일과 다른 가격: ' + ', '.join(bad[:5]))
+        if len(pairs) < 10:
+            raise RuntimeError(f'가격을 맞춰 본 줄이 {len(pairs)}개뿐이에요')
 
 
 def inject(src, o):

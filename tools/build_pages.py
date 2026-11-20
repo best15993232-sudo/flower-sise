@@ -26,6 +26,8 @@ FLOWERS = {
 }
 MIN_VARIETY_QTY = 30      # 품종 표: 최근 경매일 거래량 30속 이상만
 MAX_VARIETIES = 30
+MIN_CMP_QTY = 100         # 지난주·2주 전·작년 비교: 그 주 거래량 100속 이상일 때만 %
+MIN_YEAR_DAYS = 300       # 1년 흐름: 기록이 300일 넘게 이어질 때만 (8주 자료로 1년 수치를 만들지 않음)
 DOW = '월화수목금토일'
 esc = lambda s: html.escape(str(s), quote=True)
 
@@ -199,7 +201,8 @@ def flower_page(slug, raw, disp, others, snap, hist):
     top = rows.get(raw + SEP + '*')
     if not top or not top.get('lastDate'):
         raise ValueError(f'{raw}: 최근 경매 자료가 없어요')
-    L = top['lastDate']
+    L = meta.get('latestDate') or ''          # 가장 최근 본경매일 (이 꽃이 거래 안 됐어도 이 날짜)
+    traded = (top.get('lq') or 0) > 0 and bool(top.get('la'))
     cat = snap.get('catalog') or {}
     if cat.get('date') != L:
         raise ValueError(f"{raw}: 품종·등급 자료 날짜({cat.get('date')})가 최근 경매일({L})과 달라요")
@@ -210,20 +213,22 @@ def flower_page(slug, raw, disp, others, snap, hist):
             continue
         var[v][0] += q; var[v][1] += amt
         grade[g][0] += q; grade[g][1] += amt
-    if sum(x[0] for x in var.values()) != top['lq']:
+    if traded and sum(x[0] for x in var.values()) != top['lq']:
         raise ValueError(f"{raw}: 품종 합계 거래량과 품목 거래량 {top['lq']} 이 달라요")
-    la = top['la']
+    la = top['la'] if traded else None
     name_note = f' · 경매 이름 {esc(raw)}' if raw != disp else ''
 
     # 맨 위: 이름 · 가격 · 비교 3칸 (% 만)
     tiles = ''.join(f'<div><span>{n}</span>{chg_html(la, v).replace("<em", "<b").replace("</em>", "</b>")}</div>'
-                    for n, v in (('지난주보다', top.get('wa')), ('2주 전보다', top.get('pa')), ('작년보다', top.get('ya'))) if v)
+                    for n, v, q in (('지난주보다', top.get('wa'), top.get('wq')), ('2주 전보다', top.get('pa'), top.get('pq')),
+                                    ('작년보다', top.get('ya'), top.get('yq'))) if traded and v and (q or 0) >= MIN_CMP_QTY)
+    last = (f' · 마지막 거래 {kd(top["lastDate"])} {num(top["lastAvg"])}원' if top.get('lastAvg') and top.get('lastDate') else '')
     hero = f"""<div class="hero"><div>
 <h1>{esc(disp)} 경매 시세</h1>
 <p class="meta">{kd(L)} 본경매 · 1속 평균{name_note}</p>
 </div><img src="../img/flowers/{urllib.parse.quote(raw)}.webp" alt="" width="72" height="72"></div>
-<p class="price">{num(la)}<span>원</span></p>
-<div class="tiles">{tiles}</div>"""
+{f'<p class="price">{num(la)}<span>원</span></p>' if traded else f'<p class="price">거래 없음</p><p class="meta">이날 본경매에는 {esc(disp)} 거래가 없었어요{last}</p>'}
+{f'<div class="tiles">{tiles}</div>' if tiles else ''}"""
 
     def table(head, rows_html, more=None):
         cols = '<colgroup><col class="c1"><col><col></colgroup>'
@@ -234,15 +239,17 @@ def flower_page(slug, raw, disp, others, snap, hist):
 
     # 품종: 3칸, 10개 + 더 보기
     vs = sorted(((v, q, a) for v, (q, a) in var.items() if q >= MIN_VARIETY_QTY), key=lambda x: (-x[1], x[0]))[:MAX_VARIETIES]
-    vr = lambda v, q, a: (f'<tr><td title="{esc(v)}">{esc(v)}</td><td>{num(a / q)}원</td>'
-                          f'<td>{chg_html(a / q, (rows.get(raw + SEP + v) or {}).get("wa"))}</td></tr>')
-    vsec = table('<th>품종</th><th>평균가</th><th>지난주 대비</th>', '\n'.join(vr(*x) for x in vs[:10]),
+    def vr(v, q, a):
+        w = rows.get(raw + SEP + v) or {}
+        c = chg_html(a / q, w['wa']) if w.get('wa') and (w.get('wq') or 0) >= MIN_VARIETY_QTY else '<em class="flat">-</em>'
+        return f'<tr><td title="{esc(v)}">{esc(v)}</td><td>{num(a / q)}원</td><td>{c}</td></tr>'
+    vsec = '' if not traded else table('<th>품종</th><th>평균가</th><th>지난주 대비</th>', '\n'.join(vr(*x) for x in vs[:10]),
                  (f'{len(vs) - 10}개 더 보기', '\n'.join(vr(*x) for x in vs[10:])) if len(vs) > 10 else None)
 
     def grank(g):
         m = re.match(r'(특|상|보)?\s*(\d*)', g or '')
         return ({'특': 0, '상': 1, '보': 2}.get(m.group(1), 3), int(m.group(2) or 0), g)
-    gsec = table('<th>등급</th><th>평균가</th><th>거래량</th>', '\n'.join(
+    gsec = '' if not traded else table('<th>등급</th><th>평균가</th><th>거래량</th>', '\n'.join(
         f'<tr><td>{esc(g)}</td><td>{num(a / q)}원</td><td>{num(q)}속</td></tr>'
         for g, (q, a) in sorted(grade.items(), key=lambda x: grank(x[0])) if q))
 
@@ -258,7 +265,7 @@ def flower_page(slug, raw, disp, others, snap, hist):
     # 1년 (품목 단위)
     h = [r for r in hist if r[1] == raw]
     yr, note = '', ''
-    if h:
+    if h and (date.fromisoformat(max(r[0] for r in h)) - date.fromisoformat(min(r[0] for r in h))).days >= MIN_YEAR_DAYS:
         months = defaultdict(lambda: [0, 0, set()])
         for d, _, q, a in h:
             months[d[:7]][0] += q; months[d[:7]][1] += a; months[d[:7]][2].add(d)
@@ -278,20 +285,22 @@ def flower_page(slug, raw, disp, others, snap, hist):
         note = (f'1년 흐름은 {dots(first)}~{dots(last)} 본경매 {len({r[0] for r in h})}일, 품종·등급을 합친 {esc(disp)} 평균이에요. '
                 f'한 해 관측값이라 해마다 같다는 뜻은 아니에요. 점선 막대는 일부 날짜만 있는 달이에요.<br>')
 
-    body = f"""{hero}
-<h2>품종별 시세</h2>
+    today = (f"""<h2>품종별 시세</h2>
 <p class="meta">{kd(L)} · 거래 많은 순</p>
 {vsec}
 <h2>등급별 시세</h2>
 <p class="meta">{kd(L)} · 모든 품종 합계</p>
-{gsec}
+{gsec}""" if traded else '')
+    body = f"""{hero}
+{today}
 {w8}
 {yr}
 <a class="cta" href="../?fav={urllib.parse.quote(disp)}">{esc(disp)} 관심 꽃에 담기</a>
 <a class="more" href="../">전체 꽃 시세 보기</a>"""
     title = f'{disp} 시세 · 오늘 {disp} 경매가와 품종별 가격 | 오늘의 양재 꽃시세'
-    desc = (f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} {disp} 평균 {num(la)}원(1속), 거래량 {num(top["lq"])}속. '
-            f'품종·등급별 가격, 최근 8주와 지난 1년 흐름을 볼 수 있어요.')
+    have = [x for x, ok in (('품종·등급별 가격', traded), ('최근 8주', bool(w8)), ('지난 1년 흐름', bool(yr))) if ok]
+    desc = ((f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} {disp} 평균 {num(la)}원(1속), 거래량 {num(top["lq"])}속.') if traded else
+            f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} 본경매에는 거래가 없었어요.') + (f' {", ".join(have)}{"을" if (ord(have[-1][-1]) - 0xAC00) % 28 else "를"} 볼 수 있어요.' if have else '')
     return title, desc, [('꽃시세', '../'), (disp, None)], body, L, note
 
 
@@ -310,23 +319,97 @@ def verify(texts):
     return err
 
 
+def check_history(hist, snap):
+    """1년 기록 자체 검사: 중복·경매 요일·숫자, 그리고 시세 파일과 겹치는 날은 거래량이 같은지."""
+    err, seen = [], set()
+    for d, item, q, a in hist:
+        if (d, item) in seen: err.append(f'기록 중복 {d} {item}')
+        seen.add((d, item))
+        if date.fromisoformat(d).weekday() not in (0, 2, 4): err.append(f'월·수·금이 아닌 경매일 {d}')
+        if q <= 0 or a <= 0: err.append(f'거래량·금액이 0 이하 {d} {item}')
+    rows = snap['index']['rows']
+    for d, item, q, a in hist:
+        x = rows.get(item + SEP + '*') or {}
+        if d == snap['index']['meta'].get('latestDate') and x.get('lq') != q:
+            err.append(f'{d} {item} 거래량이 기록 {q} / 시세 파일 {x.get("lq")} 로 달라요')
+    return err
+
+
+def check_page(path, t, raw, snap, hist):
+    """만든 페이지의 숫자를 원자료에서 처음부터 다시 계산해 맞춰 봐요."""
+    err = []
+    rows = snap['index']['rows']; meta = snap['index']['meta']
+    top = rows[raw + SEP + '*']; L = meta['latestDate']
+    traded = (top.get('lq') or 0) > 0 and bool(top.get('la')); la = top['la'] if traded else None
+    if re.search(r'>0원', t): err.append(f'{path}: 0원 표시가 있어요 (거래 없음은 0원이 아니에요)')
+    m = re.search(r'<p class="price">([\d,]+)<span>원', t)
+    if traded and (not m or m.group(1) != num(la)): err.append(f'{path}: 맨 위 가격 다름')
+    if not traded and (m or '<p class="price">거래 없음</p>' not in t): err.append(f'{path}: 거래가 없는데 가격을 보여 줌')
+    if f'<p class="meta">{kd(L)} 본경매' not in t: err.append(f'{path}: 경매일 다름')
+    want = {'지난주보다': ('wa', 'wq'), '2주 전보다': ('pa', 'pq'), '작년보다': ('ya', 'yq')}
+    got = dict((n, c) for n, c in re.findall(r'<div><span>([^<]+)</span><b class="\w+">([^<]+)</b>', t))
+    for n, (k, kq) in want.items():
+        ok = traded and top.get(k) and (top.get(kq) or 0) >= MIN_CMP_QTY
+        if ok and got.get(n) != chg(la, top[k])[0]: err.append(f'{path}: {n} % 다름')
+        if not ok and n in got: err.append(f'{path}: 표본이 적은데 {n} % 를 보여 줌')
+    # 품종: 순서·평균가·지난주 대비
+    q, a = defaultdict(int), defaultdict(int)
+    gq, ga = defaultdict(int), defaultdict(int)
+    for x in (snap['catalog']['items']):
+        if x[0] == raw and x[6]:
+            q[x[1]] += x[6]; a[x[1]] += x[7]; gq[x[2]] += x[6]; ga[x[2]] += x[7]
+    exp = sorted((v for v in q if q[v] >= MIN_VARIETY_QTY), key=lambda v: (-q[v], v))[:MAX_VARIETIES] if traded else []
+    vrows = re.findall(r'<tr><td title="([^"]+)">[^<]*</td><td>([\d,]+)원</td><td><em class="\w+">([^<]+)</em></td></tr>', t)
+    if [html.unescape(v) for v, _, _ in vrows] != exp: err.append(f'{path}: 품종 목록·순서 다름')
+    for v, pr, c in vrows:
+        v = html.unescape(v); w = rows.get(raw + SEP + v) or {}
+        if pr != num(a[v] / q[v]): err.append(f'{path}: {v} 평균가 다름')
+        ec = chg(a[v] / q[v], w['wa'])[0] if w.get('wa') and (w.get('wq') or 0) >= MIN_VARIETY_QTY else '-'
+        if c != ec: err.append(f'{path}: {v} 지난주 대비 다름 ({c} / {ec})')
+    # 등급
+    for g, pr, qq in re.findall(r'<tr><td>([특상보][^<]*)</td><td>([\d,]+)원</td><td>([\d,]+)속</td></tr>', t):
+        if pr != num(ga[g] / gq[g]) or qq != num(gq[g]): err.append(f'{path}: 등급 {g} 다름')
+    # 8주 마지막 값
+    tr = [v for v in top.get('trend') or [] if v]
+    if tr and f'>{num(tr[-1])}원</text>' not in t: err.append(f'{path}: 8주 마지막 주 값 다름')
+    # 1년 달별
+    h = [r for r in hist if r[1] == raw]
+    mq, ma = defaultdict(int), defaultdict(int)
+    for d, _, qq, aa in h: mq[d[:7]] += qq; ma[d[:7]] += aa
+    months = re.findall(r'<tr><td>(\d+)년 (\d+)월[^<]*</td><td>([\d,]+)원</td><td>([\d,]+)속</td></tr>', t)
+    span = (date.fromisoformat(max(r[0] for r in h)) - date.fromisoformat(min(r[0] for r in h))).days if h else 0
+    if months and span < MIN_YEAR_DAYS: err.append(f'{path}: 기록이 1년이 안 되는데 1년 흐름을 보여 줌')
+    if span >= MIN_YEAR_DAYS and len(months) != len(mq): err.append(f'{path}: 달 수 다름')
+    for y, mo, pr, qq in months:
+        k = f'20{int(y):02d}-{int(mo):02d}'
+        if pr != num(ma[k] / mq[k]) or qq != num(mq[k]): err.append(f'{path}: {k} 달별 값 다름')
+    return err
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--only')
     a = ap.parse_args()
     slugs = [s.strip() for s in a.only.split(',')] if a.only else list(FLOWERS)
-    snap = json.load(open(os.path.join(ROOT, 'data', 'snapshot.json'), encoding='utf-8'))
-    hist = load_history()
+    try:
+        snap = json.load(open(os.path.join(ROOT, 'data', 'snapshot.json'), encoding='utf-8'))
+        hist = load_history()
+    except Exception as e:
+        print('시세 파일·기록을 읽지 못해 꽃별 페이지 건너뜀 (파일 그대로):', e)
+        return 0
     texts = {}
     try:
         for s in slugs:
             raw, disp, others = FLOWERS[s]
             title, desc, crumbs, body, changed, note = flower_page(s, raw, disp, others, snap, hist)
             texts[f'flower/{s}.html'] = page(f'flower/{s}.html', title, desc, crumbs, body, changed, note)
-    except ValueError as e:
+    except (ValueError, KeyError, TypeError) as e:
         print('꽃별 페이지 건너뜀 (파일 그대로):', e)
         return 0
-    err = verify(texts)
+    err = verify(texts) + check_history(hist, snap)
+    for s in slugs:
+        p = f'flower/{s}.html'
+        if p in texts: err += check_page(p, texts[p], FLOWERS[s][0], snap, hist)
     if err:
         print('\n'.join(err))
         print('검사에 걸려 꽃별 페이지를 바꾸지 않았어요')
