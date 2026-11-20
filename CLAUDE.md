@@ -54,10 +54,16 @@ aT 오픈API
 - `data/snapshot.json`: 첫 화면용 시세 파일. **자동 생성, 손으로 고치지 않음**
 - `img/flowers/`: 꽃 그림. **'꽃 그림 가져오기'가 관리, 손으로 고치지 않음**
 - `tools/snapshot.py`: snapshot.json 만드는 스크립트
+- `tools/history.py`: 경매 기록을 `data/history/` 에 이어 쌓음 (품목 합계 items-*, 품종×등급 detail-*). **자동 생성, 손으로 고치지 않음**
+- `tools/prerender.py`: 첫 화면 시세 표를 `index.html` 의 `<!--pre:..-->` 자리에 미리 넣음 (검색용). 크롬으로 화면 코드를 그대로 돌려 넣으므로 자리 표시는 지우지 않음
+- `tools/build_pages.py`: 꽃별 페이지 `flower/<영문>.html` 44개, `flower/others.html`, `sitemap.xml` 을 만듦. 원자료와 다시 맞춰 보는 검사를 통과할 때만 씀. 꽃 목록·영문 주소는 `FLOWERS`
+  - 메인에서 꽃별 페이지로 가는 링크는 넣지 않음 (사용자 결정). 꽃별 페이지 → 메인은 가능
+  - 계획: flower-planner 저장소 `docs/seo-plan-20261120.md` (원본은 노션 '검색 노출 개선 계획 2.1판')
 - `sw.js`, `manifest.webmanifest`: 홈 화면 추가용
 
 자동 작업 (`.github/workflows`, 둘 다 같은 concurrency 그룹이라 겹치지 않음)
 - `snapshot.yml` 시세 파일 미리 만들기: 서울 6~11시 15분마다, 그 밖에는 1시간마다. 내용이 바뀌었을 때만 커밋
+  - 이어서 경매 기록 쌓기, 첫 화면 표 미리 넣기, 꽃별 페이지·사이트맵 만들기. 이 셋이 실패해도 시세 파일은 올라감
 - `sync-flowers.yml` 꽃 그림 가져오기: 매일 서울 5시 20분. 새 그림과 바뀐 그림만 복사, 지우지 않음, .webp 3MB 이하만. 그림 목록 `FLOWER_IMG` 를 img/flowers 파일 이름으로 다시 만듦
 
 자동 작업이 수시로 커밋하므로, 고치기 전에 항상 `git pull` 합니다.
@@ -115,7 +121,7 @@ index.html 에서 자주 보는 곳
 
 - 비밀 값(aT 키, OpenAI 키 등)을 저장소, 코드, 커밋 메시지, 대화에 적지 않습니다. 이 저장소는 공개입니다.
 - 사이트에 회사 이름, 회사 연락처, 다른 사이트 연결을 넣지 않습니다. 꽃집 카페 등에 올리는 중립 사이트입니다.
-- `data/snapshot.json`, `img/flowers/`, `FLOWER_IMG` 목록을 손으로 고치지 않습니다.
+- `data/snapshot.json`, `data/history/`, `flower/`, `img/flowers/`, `FLOWER_IMG` 목록을 손으로 고치지 않습니다.
 - Apps Script 는 '새 배포' 대신 '배포 관리 > 새 버전'으로 올립니다.
 - 사용자 관련 실명이나 직책을 문서에 적지 않습니다. '사용자'로만 씁니다.
 

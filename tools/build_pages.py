@@ -214,6 +214,15 @@ def month_bars(ms, hi, lo, full):
     return f'<svg viewBox="0 0 {W} {H}" role="img" aria-label="달별 평균 경매가 막대">{"".join(out)}</svg>'
 
 
+def year_rows(hist, raw):
+    """'지난 1년': 그 꽃 기록 중 가장 최근 기록일부터 365일 안 (기록이 쌓여도 창이 앞으로 움직임)"""
+    h = [r for r in hist if r[1] == raw]
+    if not h:
+        return h
+    end = date.fromisoformat(max(r[0] for r in hist))
+    return [r for r in h if (end - date.fromisoformat(r[0])).days < 365]
+
+
 def img_tag(raw):
     return (f'<img src="../img/flowers/{urllib.parse.quote(raw)}.webp" alt="" width="72" height="72">'
             if os.path.exists(os.path.join(ROOT, 'img', 'flowers', raw + '.webp')) else '')
@@ -344,7 +353,7 @@ def flower_page(slug, raw, disp, others, snap, hist):
 <div class="chart">{line_chart([l for l, _ in wk8], [v for _, v in wk8])}</div>"""
 
     # 1년 (품목 단위)
-    h = [r for r in hist if r[1] == raw]
+    h = year_rows(hist, raw)
     yr, note = '', ''
     if h and (date.fromisoformat(max(r[0] for r in h)) - date.fromisoformat(min(r[0] for r in h))).days >= MIN_YEAR_DAYS:
         months = defaultdict(lambda: [0, 0, set()])
@@ -455,7 +464,7 @@ def check_page(path, t, raw, snap, hist):
     tr = [v for v in top.get('trend') or [] if v]
     if tr and f'>{num(tr[-1])}원</text>' not in t: err.append(f'{path}: 8주 마지막 주 값 다름')
     # 1년 달별
-    h = [r for r in hist if r[1] == raw]
+    h = year_rows(hist, raw)
     mq, ma = defaultdict(int), defaultdict(int)
     for d, _, qq, aa in h: mq[d[:7]] += qq; ma[d[:7]] += aa
     months = re.findall(r'<tr><td>(\d+)년 (\d+)월[^<]*</td><td>([\d,]+)원</td><td>([\d,]+)속</td></tr>', t)
