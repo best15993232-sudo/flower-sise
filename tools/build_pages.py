@@ -266,7 +266,8 @@ def others_page(snap):
 <a class="more" href="../">전체 꽃 시세 보기</a>
 {other_links('others')}"""
     title = '기타 꽃 경매 시세 · 품목별 경매가 | 오늘의 양재 꽃시세'   # 제목에 날짜를 넣지 않음 (검색 결과에 옛 날짜가 남음, 2026-11-23 사용자 요청)
-    desc = f'양재 화훼공판장 {kd(L)} 본경매 기타 품목 {len(names)}개의 평균 경매가와 지난주 대비. ' + ', '.join(names[:6]) + ' 등.'
+    # 제목·설명에는 매일 바뀌는 날짜·숫자를 넣지 않음 (검색 결과에 옛 값이 남음, 2026-11-23 사용자 원칙)
+    desc = '양재 화훼공판장 본경매에서 꽃별 페이지가 없는 기타 품목의 1속 평균 경매가와 지난주 대비를 경매일마다 정리해요.'
     return title, desc, [('꽃시세', '../'), ('기타 품목', None)], body, L, ''
 
 
@@ -391,9 +392,10 @@ def flower_page(slug, raw, disp, others, snap, hist):
 <a class="more" href="../">전체 꽃 시세 보기</a>
 {other_links(slug)}"""
     title = f'{disp} 시세 · 오늘 {disp} 경매가와 품종별 가격 | 오늘의 양재 꽃시세'
-    have = [x for x, ok in (('품종·등급별 가격', traded), ('최근 8주', bool(w8)), ('지난 1년 흐름', bool(yr))) if ok]
-    desc = ((f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} {disp} 평균 {num(la)}원(1속), 거래량 {num(top["lq"])}속.') if traded else
-            f'양재 화훼공판장 {disp} 경매 시세. {kd(L)} 본경매에는 거래가 없었어요.') + (f' {", ".join(have)}{"을" if (ord(have[-1][-1]) - 0xAC00) % 28 else "를"} 볼 수 있어요.' if have else '')
+    have = [x for x, ok in (('지난주·작년 대비', traded), ('품종·등급별 가격', traded), ('최근 8주', bool(w8)), ('지난 1년 흐름', bool(yr))) if ok]
+    # 제목·설명에는 매일 바뀌는 날짜·가격·거래량을 넣지 않음 (검색 결과에 옛 값이 남음, 2026-11-23 사용자 원칙)
+    desc = (f'양재 화훼공판장 {disp} 경매 시세를 경매일마다 정리해요. 1속 평균 경매가'
+            + (f'와 {", ".join(have)}{"을" if (ord(have[-1][-1]) - 0xAC00) % 28 else "를"} 볼 수 있어요.' if have else '를 볼 수 있어요.'))
     return title, desc, [('꽃시세', '../'), (disp, None)], body, L, note
 
 
