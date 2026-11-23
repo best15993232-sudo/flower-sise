@@ -265,7 +265,7 @@ def others_page(snap):
 </tbody></table></div>
 <a class="more" href="../">전체 꽃 시세 보기</a>
 {other_links('others')}"""
-    title = f'기타 꽃 경매 시세 · {kd(L)} 품목별 경매가 | 오늘의 양재 꽃시세'
+    title = '기타 꽃 경매 시세 · 품목별 경매가 | 오늘의 양재 꽃시세'   # 제목에 날짜를 넣지 않음 (검색 결과에 옛 날짜가 남음, 2026-11-23 사용자 요청)
     desc = f'양재 화훼공판장 {kd(L)} 본경매 기타 품목 {len(names)}개의 평균 경매가와 지난주 대비. ' + ', '.join(names[:6]) + ' 등.'
     return title, desc, [('꽃시세', '../'), ('기타 품목', None)], body, L, ''
 
@@ -333,8 +333,10 @@ def flower_page(slug, raw, disp, others, snap, hist):
         w = rows.get(raw + SEP + v) or {}
         c = chg_html(a / q, w['wa']) if w.get('wa') and (w.get('wq') or 0) >= MIN_VARIETY_QTY else '<em class="flat">-</em>'
         return f'<tr><td title="{esc(v)}">{esc(v)}</td><td>{num(a / q)}원</td><td>{c}</td></tr>'
-    vsec = '' if not traded else table('<th>품종</th><th>평균가</th><th>지난주 대비</th>', '\n'.join(vr(*x) for x in vs[:10]),
-                 (f'{len(vs) - 10}개 더 보기', '\n'.join(vr(*x) for x in vs[10:])) if len(vs) > 10 else None)
+    vsec = ('' if not traded else
+            f'<p class="meta">이날은 {MIN_VARIETY_QTY}속 넘게 거래된 품종이 없었어요. (전체 {num(top["lq"])}속)</p>' if not vs else
+            table('<th>품종</th><th>평균가</th><th>지난주 대비</th>', '\n'.join(vr(*x) for x in vs[:10]),
+                  (f'{len(vs) - 10}개 더 보기', '\n'.join(vr(*x) for x in vs[10:])) if len(vs) > 10 else None))
 
     def grank(g):
         m = re.match(r'(특|상|보)?\s*(\d*)', g or '')
@@ -509,15 +511,28 @@ def main():
         changed_day = snap['index']['meta'].get('latestDate') or ''
         sm += [f'  <url><loc>{BASE}{p}</loc><lastmod>{changed_day}</lastmod></url>' for p in sorted(texts)]
         texts['sitemap.xml'] = '\n'.join(sm + ['</urlset>']) + '\n'
-    err = verify({k: v for k, v in texts.items() if k.endswith('.html')}) + check_history(hist, snap)
-    if 'flower/others.html' in texts: err += check_others(texts['flower/others.html'], snap)
+    # 검사: 페이지 하나가 걸리면 그 페이지만 이전 것을 두고 나머지는 갱신. 기록·사이트맵 문제는 전부 멈춤
+    page_err = defaultdict(list)
+    for e in verify({k: v for k, v in texts.items() if k.endswith('.html')}):
+        page_err[e.split(':')[0]].append(e)
+    if 'flower/others.html' in texts:
+        for e in check_others(texts['flower/others.html'], snap): page_err['flower/others.html'].append(e)
+    for s in slugs:
+        p = f'flower/{s}.html'
+        if p in texts: page_err[p] += check_page(p, texts[p], FLOWERS[s][0], snap, hist)
+    bad = sorted(p for p, e in page_err.items() if e)
+    for p in bad:
+        print('\n'.join(page_err[p]))
+        print(f'{p} 는 검사에 걸려 이전 페이지를 그대로 둬요')
+        texts.pop(p, None)
+    if len(bad) > max(3, len(slugs) // 5):
+        print(f'검사에 걸린 페이지가 {len(bad)}개로 많아요. 자료 문제일 수 있어 아무것도 바꾸지 않았어요')
+        return 0
+    err = check_history(hist, snap)
     if 'sitemap.xml' in texts:
         for u in re.findall(r'<loc>([^<]+)</loc>', texts['sitemap.xml']):
             r = u[len(BASE):] or 'index.html'
             if r not in texts and not os.path.exists(os.path.join(ROOT, r)): err.append(f'사이트맵 주소에 파일 없음: {u}')
-    for s in slugs:
-        p = f'flower/{s}.html'
-        if p in texts: err += check_page(p, texts[p], FLOWERS[s][0], snap, hist)
     if err:
         print('\n'.join(err))
         print('검사에 걸려 꽃별 페이지를 바꾸지 않았어요')
